@@ -15,7 +15,7 @@ apt update
 echo "Installing required packages..."
 apt install -y hostapd dnsmasq iptables-persistent network-manager
 
-systemctl status NetworkManager
+systemctl restart NetworkManager
 
 echo "Configuring hostapd..."
 cat > /etc/hostapd/hostapd.conf <<EOF
