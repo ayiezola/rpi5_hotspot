@@ -17,6 +17,8 @@ apt install -y hostapd dnsmasq iptables-persistent network-manager
 
 echo "Configuring hostapd..."
 cat > /etc/hostapd/hostapd.conf <<EOF
+country_code=US
+ieee80211d=1
 interface=$WLAN_INTERFACE
 ssid=$SSID
 hw_mode=g
@@ -31,20 +33,21 @@ EOF
 # Set hostapd config file path
 sed -i 's|#DAEMON_CONF=""|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 
-echo "Disabling auto-connect for WiFi and setting static IP using NetworkManager..."
-nmcli connection show | grep "$WLAN_INTERFACE" || nmcli device connect $WLAN_INTERFACE
+#echo "Disabling auto-connect for WiFi and setting static IP using NetworkManager..."
+#nmcli connection show | grep "$WLAN_INTERFACE" || nmcli device connect $WLAN_INTERFACE
 
-CONN_NAME=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$WLAN_INTERFACE" | cut -d: -f1)
+#CONN_NAME=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$WLAN_INTERFACE" | cut -d: -f1)
 
-nmcli connection modify "$CONN_NAME" \
-  ipv4.addresses "$STATIC_IP" \
-  ipv4.method manual \
-  connection.autoconnect yes \
-  ipv4.gateway "" \
-  ipv4.dns ""
+#nmcli connection modify "$CONN_NAME" \
+#  ipv4.addresses "$STATIC_IP" \
+#  ipv4.method manual \
+#  connection.autoconnect yes \
+#  ipv4.gateway "" \
+#  ipv4.dns ""
 
-nmcli connection down "$CONN_NAME"
-nmcli connection up "$CONN_NAME"
+#nmcli connection down "$CONN_NAME"
+#nmcli connection up "$CONN_NAME"
+nmcli connection delete preconfigured
 
 echo "Configuring dnsmasq..."
 cat > /etc/dnsmasq.conf <<EOF
